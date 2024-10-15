@@ -502,3 +502,277 @@ export const createSubMerchantsResponse = [
 }`,
   },
 ];
+
+export const directPaymentApi = [
+  {
+    title: "Header",
+    children: [
+      {
+        key: "Authorization",
+        dataType: "String",
+        description:
+          "API keys (Secret Key) that authorize your transactions and gotten from your squad dashboard",
+        required: true,
+      },
+    ],
+  },
+  {
+    title: "Body",
+    children: [
+      {
+        key: "email",
+        dataType: "String",
+        description: "Customer's email address.",
+        required: true,
+      },
+      {
+        key: "amount",
+        dataType: "String",
+        description:
+          "The amount in kobo you are debiting customer (expressed in the lowest currency value - kobo).  10000 = 100NGN ",
+        required: true,
+      },
+      {
+        key: "currency",
+        dataType: "String",
+        description:
+          "The currency you want the amount to be charged in. Allowed value is NGN",
+        required: false,
+      },
+      {
+        key: "name",
+        dataType: "String",
+        description:
+          "Name of Customer carrying out the transaction.",
+        required: false,
+      },
+      {
+        key: "transaction_ref",
+        dataType: "String",
+        description:
+          "This states the method by which the transaction is initiated. At the moment, this can only take the value 'inline'.",
+        required: false,
+      },
+      {
+        key: "customer_name",
+        dataType: "String",
+        description: "Name of Customer carrying out the transaction",
+        required: false,
+      },
+      {
+        key: "bank_code",
+        dataType: "String",
+        description:
+          "Unique NIP code that identifies a bank.",
+        required: true,
+      },
+      {
+        key: "payment_method",
+        dataType: "String",
+        description:
+          "method of payment (should use BANK)",
+        required: true,
+      },
+      {
+        key: "transaction_ref",
+        dataType: "String",
+        description:
+          "An alphanumeric string that uniquely identifies a transaction (where none is presented, the sytem generates one for you)",
+        required: false,
+      },
+      {
+        key: "webhook_url",
+        dataType: "String",
+        description:
+          "Allows you define where webhook notification is sent (where none is presented, the default webhook for merchant is notified)",
+        required: false,
+      },
+      {
+        key: "account_or_phone",
+        dataType: "String",
+        description: "The GTBank account number to be debitted",
+        required: true,
+      },
+      {
+        key: "pass_charge",
+        dataType: "Boolean",
+        description:
+          "It takes two possible values: True or False. It is set to False by default. When set to True, the charges on the transaction is computed and passed on to the customer(payer). But when set to False, the charge is passed to the merchant and will be deducted from the amount to be settled to the merchant.",
+        required: false,
+      },
+    ],
+  },
+];
+
+export const directPaymentResponse = [
+  {
+    status: "200:OK",
+    responseMsg: "Successful",
+    pill: colors?.greenColor,
+    code: `{
+    "status": 200,
+    "success": true,
+    "message": "Success",
+    "data": {
+        "amount": 51800,
+        "transaction_ref": "SQDEMO6386363720055500003",
+        "transaction_type": "Bank",
+        "gateway_ref": "SQDEMO6386363720055500003_2_2_1",
+        "merchant_amount": 46178.4,
+        "message": "Please enter the 6-digit code from your GTBank token / e-Token or dial *737*7# with your registered GTBank phone number.",
+        "auth_model": "ValidateTOKEN"
+    }
+}
+
+`,
+  },
+  {
+    status: "401:Unauthorized",
+    responseMsg: "Invalid/No Authorization Key",
+    pill: colors?.orangeColor,
+    code: `{
+    "success": false,
+    "message": "",
+    "data": {}
+}`,
+  },
+  {
+    status: "400:Bad Request",
+    responseMsg: "Bad Request",
+    pill: colors?.orangeColor,
+    code: `{
+    "status": 400,
+    "success": false,
+    "message": "\"account_or_phoneno\" is required",
+    "data": {}
+}
+`,
+  },
+];
+export const validatePaymentApi = [
+  {
+    title: "Header",
+    children: [
+      {
+        key: "Authorization",
+        dataType: "String",
+        description:
+          "API keys (Secret Key) that authorize your transactions and gotten from your squad dashboard",
+        required: true,
+      },
+    ],
+  },
+  {
+    title: "Body",
+    children: [
+      {
+        key: "transaction_reference",
+        dataType: "String",
+        description: "Transaction Refrence from the initiated payment",
+        required: true,
+      },
+      {
+        key: "otp_token",
+        dataType: "String",
+        description: "Unique OTP or Token sent to customer, required for transaction completion",
+        required: true,
+      },
+      {
+        key: "authorization",
+        dataType: "String",
+        description:
+          "Contains otp_token",
+        required: false,
+      },
+    ],
+  },
+];
+export const validatePaymentResponse = [
+  {
+    status: "ValidateTOKEN",
+    pill: colors?.greenColor,
+    code: `{
+    "status": 200,
+    "success": true,
+    "message": "Success",
+    "data": {
+        "amount": 56800,
+        "transaction_ref": "SQDEMO6386313153377900002",
+        "transaction_type": "Bank",
+        "gateway_ref": "SQDEMO6386313153377900002_2_2_1",
+        "merchant_amount": 51118.4,
+        "auth_model": "ValidateTOKEN",
+        "message": "Charge attempted"
+    }
+}`,
+  },
+  {
+    status: "ValidateOTP",
+    pill: colors?.orangeColor,
+    code: `{
+    "status": 200,
+    "success": true,
+    "message": "Success",
+    "data": {
+        "amount": 56800,
+        "transaction_ref": "SQDEMO6386313153377900002",
+        "transaction_type": "Bank",
+        "gateway_ref": "SQDEMO6386313153377900002_2_2_1",
+        "merchant_amount": 51118.4,
+        "auth_model": "ValidateOTP",
+        "message": "Charge attempted"
+    }
+}`,
+  },
+];
+export const ussdPaymentApi = [
+  {
+    title: "Body",
+    children: [
+      {
+        key: "transaction_reference",
+        dataType: "String",
+        description: "Transaction Refrence from the initiated payment",
+        required: true,
+      },
+      {
+        key: "otp_token",
+        dataType: "String",
+        description: "Unique OTP or Token sent to customer, required for transaction completion",
+        required: true,
+      },
+      {
+        key: "authorization",
+        dataType: "String",
+        description:
+          "Contains otp_token",
+        required: false,
+      },
+    ],
+  },
+];
+export const ussdPaymentResponse = [
+  {
+    status: "200:OK",
+    responseMsg: "Successful",
+    pill: colors?.greenColor,
+    code: `{
+    "status": 200,
+    "success": true,
+    "message": "Success",
+    "data": {
+        "amount": 56800,
+        "transaction_ref": "SQDEMO6386363261862600002",
+        "transaction_type": "Ussd",
+        "gateway_ref": "SQDEMO6386363261862600002_3_3_1",
+        "merchant_amount": 51118.4,
+        "message": "USSD Payment Reference Generated",
+        "auth_model": "USSDCodeGenerated",
+        "ussd_details": {
+            "ussd_reference": "*737*000*1914",
+            "expiresAt": "2024-10-04T11:01:59.8888866"
+        }
+    }
+}`,
+  },
+];

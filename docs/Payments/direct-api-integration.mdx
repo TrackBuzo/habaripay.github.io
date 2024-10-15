@@ -1,0 +1,203 @@
+---
+sidebar_position: 2
+---
+
+import Accordion from "../../src/components/Accordion";
+import AccordionCode from "../../src/components/AccordionCode";
+import {
+  initiatePaymentApi,
+  validatePaymentApi,
+  validatePaymentResponse,
+  ussdPaymentApi,
+  ussdPaymentResponse,
+  directPaymentApi,
+  directPaymentResponse,
+  initiatePaymentResponse,
+  chargeCardApi,
+  chargeCardResponse,
+  queryAllTransactionsApi,
+  queryAllTransactionsResponse,
+} from "@site/src/data/PaymentDocs/data.js";
+import ApiTest from "@site/src/components/ApiTest";
+
+# Direct API Integration
+
+##### This suite of APIs allows you to directly initiate BANK and USSD transactions without using the Squad Modal.
+
+:::note
+
+**Authorization** Any request made without the authorization key (secret key) will fail with a ** 401 ** (Unauthorized) response code.
+
+:::
+
+:::caution
+If using other services such as dynamic virtual accounts, do not use the same transaction reference
+:::
+
+:::info
+
+**The authorization key is sent via the request header as Bearer Token Authorization**
+
+:::
+
+**Example**:
+Authorization: Bearer sandbox_sk_94f2b798466408ef4d19e848ee1a4d1a3e93f104046f
+
+### Direct GTBank account debit
+
+
+This endpoint allows you to initiate the direct debit of a GTBank account by passing the account number. After initiating the request using this endpoint you are then to call the validate endpoint to complete the transaction.
+
+
+<Accordion
+  items={directPaymentApi}
+  parameters={true}
+  endpoint={"https://sandbox-api-squadco.com/transaction/initiate/process-payment"}
+  method={"POST"}
+  summary={
+    "This endpoint initiate the direct debit of a GTBank account by passing the account number"
+  }
+/>
+
+### Sample Request
+
+```
+{
+  "transaction_reference": "test001",
+  "amount": 51800,
+  "pass_charge": false,
+  "currency": "NGN",
+  "webhook_url": "www.sampleurl.com",
+  "bank": {
+    "bank_code": "058",
+    "account_or_phoneno": "08146663666"
+  },
+  "payment_method": "bank",
+  "customer": {
+     "name": "William Udousoro",
+   "email": "squadtest@gmail.com"
+  }
+}
+```
+
+<AccordionCode items={directPaymentResponse} />
+
+
+
+### Validate Payment for Direct Bank API Payment
+Once a payment is initiated using the Direct Bank API, the transaction must be authenticated. This is done using this endpoint to receive details from the user.
+
+:::info
+
+For the auth_model: The value could be either ValidateTOKEN or ValidateOTP.
+
+If ValidateTOKEN is received, the payee is expected to input OTP from *737*7#, hardware token or e-token to complete the transaction.
+
+If ValidateOTP is returned, then an OTP will be sent to the phone number linked to the customer account number which the payee inputs to complete the transaction.
+
+:::
+
+
+<Accordion
+  items={validatePaymentApi}
+  parameters={true}
+  endpoint={"https://sandbox-api-squadco.com/transaction/validate-payment"}
+  method={"POST"}
+  summary={
+    "This endpoint returns a checkout URL that when visited calls up the modal with the various payment channel."
+  }
+/>
+
+### Sample Request
+
+```
+{
+  "transaction_reference": "SQDEMO6386363261862600002",
+  "authorization": {
+    "otp_token": "123456"
+  }
+}
+
+```
+
+<AccordionCode items={validatePaymentResponse} />
+
+
+### Initiate USSD payment
+
+This API allows you to directly process USSD transactions, with the same param details as direct bank payment.
+
+
+<Accordion
+  items={ussdPaymentApi}
+  parameters={true}
+  endpoint={"https://sandbox-api-squadco.com/transaction/initiate/process-payment"}
+  method={"POST"}
+  summary={
+    "This endpoint returns a checkout URL that when visited calls up the modal with the various payment channel."
+  }
+/>
+
+#### USSD SUPPORTED BANKS AND BANK CODES
+
+| Bank Name                 | Bank Code |
+|---------------------------|-----------|
+| Access (Diamond)           | 063       |
+| Access                     | 044       |
+| Ecobank                    | 050       |
+| FCMB                       | 214       |
+| Fidelity Bank              | 070       |
+| First Bank                 | 011       |
+| Guaranty Trust Bank        | 058       |
+| Heritage Bank              | 030       |
+| Keystone Bank              | 082       |
+| Rubies (Highstreet) MFB    | 125       |
+| Stanbic Bank               | 221       |
+| Sterling Bank              | 232       |
+| UBA                        | 033       |
+| Union Bank                 | 032       |
+| Unity Bank                 | 215       |
+| VFD Bank                   | 566       |
+| Wema Bank                  | 035       |
+| Zenith Bank                | 057       |
+| Globus Bank                | 00103     |
+| Premium Trust Bank         | 105       |
+| LOTUS Bank                 | 303       |
+| Optimum Trust Bank         | 107       |
+| Kuda MFB                   | 50211     |
+
+
+The bank code provided is what should be populated in the bank_code parameter.
+
+### Sample Request
+
+```
+{
+  "transaction_reference": "testussd",
+  "amount": 56800,
+  "pass_charge": false,
+  "currency": "NGN",
+  "webhook_url": "www.sampleurl.com",
+  "ussd": {
+    "bank_code": "058"
+  },
+  "payment_method": "ussd",
+  "customer": {
+    "name": "Test User",
+    "email": "TestUser@gmail.com"
+  }
+}
+
+```
+
+<AccordionCode items={ussdPaymentResponse} />
+
+### Go Live
+
+To go live, simply:
+
+1. Change the base URL of your endpoints from sandbox-api-d.squadco.com to
+   api-d.squadco.com
+2. [Sign up on our Live Environment](https://dashboard.squadco.com/login)
+3. Complete your KYC
+4. Use the secret key provided on the dashboard to replace the test keys gotten from the sandbox environment to authenticate your live transactions.

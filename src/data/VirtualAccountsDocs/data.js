@@ -83,16 +83,18 @@ export const customerModelResponse = [
     responseMsg: "Success Response",
     pill: colors?.greenColor,
     code: `{
-            "customer_identifier": "CCC",
-            "first_name": "Techzilla- Joesph",
-            "last_name": "Okoye",
-            "mobile_num": "08139011943",
-            "email": "ayo@gmail.com",
-            "bvn": "12343211654",
-            "dob": "30/10/1990",
-            "address": "22 Kota street, UK",
-            "gender": "1",
-            "beneficiary_account": "4920299492"
+    "success": true,
+    "message": "Success",
+    "data": {
+        "first_name": "Joesph",
+        "last_name": "Ayodele",
+        "bank_code": "058",
+        "virtual_account_number": "7834927713",
+        "beneficiary_account": "4920299492",
+        "customer_identifier": "CCC",
+        "created_at": "2022-03-29T13:17:52.832Z",
+        "updated_at": "2022-03-29T13:17:52.832Z"
+    }
 }`,
   },
   {
